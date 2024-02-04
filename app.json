@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "bibliyeutheque",
+    "slug": "bibliyeutheque",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
