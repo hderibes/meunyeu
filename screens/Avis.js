@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 export default function AvisScreen() {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Laisser un avis!</Text>
+            <Text>Emprunter un livre!</Text>
         </View>
     );
 }
