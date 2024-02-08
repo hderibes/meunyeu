@@ -2,6 +2,11 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+// plugins{
+//     id 'com.android.application'
+//     id 'com.google.gms.google-services'
+// }
+
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
 /**
@@ -86,7 +91,7 @@ android {
     namespace "com.bibliyeutheque"
     defaultConfig {
        // missingDimensionStrategy 'react-native-camera', 'general'
-        applicationId "com.bibliyeutheque"
+        //applicationId "com.bibliyeutheque"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -143,6 +148,8 @@ android {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:32.7.1')
+    implementation 'com.google.firebase:firebase-analytics'
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 

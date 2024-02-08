@@ -1,33 +1,15 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import { Text, View, SafeAreaView, StyleSheet,Image, FlatList, Platform, StatusBar  } from 'react-native';
 import { SearchBar } from 'react-native-elements';
+import { collection, getDocs, where, limit, query} from "firebase/firestore"; 
+import db from '../firebaseConfig'
 
-const DATA = [
-  {
-    id: '1',
-    title: 'Bel Ami',
-    auteur:'Guy de Maupassant',
-    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Maupassant_par_Nadar.jpg/440px-Maupassant_par_Nadar.jpg'
-  },
-  {
-    id: '2',
-    title: 'Poésies imaginaires',
-    auteur:'Victor Hugo',
-    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Rimbaud%2C_Po%C3%A9sies_-_022.jpg/1280px-Rimbaud%2C_Po%C3%A9sies_-_022.jpg'
-  },
-  {
-    id: '3',
-    title: 'tout sur la prépa !',
-    auteur:'Les profs',
-    img:'https://www.vuibert.fr/sites/default/files/produits/images/couvertures/9782311408720-g.jpg'
-  },
-];
 
 const Item = ({ title, image, auteur }) => (
   <View style={styles.item}>
     <Image
         style={styles.couverture}
-        source={{uri: image,}}
+        source={{uri: image}}
     />
     <View style={{flex: 1, justifyContent: 'center'}}>
         <Text style={styles.title}>{title}</Text>
@@ -38,18 +20,59 @@ const Item = ({ title, image, auteur }) => (
 );
 
 const LivresScreen = () => {
-  const [data, setData] = useState(DATA);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = React.useState('');
+  const [Data, setData] = React.useState([]);
+  const [OriginalData, setOriginalData] = React.useState([]);
 
   const searchFunction = (text) => {
-    const updatedData = DATA.filter((item) => {
-      const itemData = `${item.title.toUpperCase()}`;
-      const textData = text.toUpperCase();
+    const textData = text.toUpperCase();
+    if (textData === "") {
+      setData(OriginalData); // Utilisez la variable contenant toutes les données d'origine
+      setSearchValue(text);
+      return;
+    }
+
+    const updatedData = OriginalData.filter((item) => {
+      const itemData = item?.Titre?.toUpperCase() || "";
       return itemData.indexOf(textData) > -1;
     });
+
     setData(updatedData);
     setSearchValue(text);
   };
+
+
+  React.useEffect(()=>{
+      AfficherLivres();
+      
+  },[]);
+
+  async function AfficherLivres(){
+      try{
+          collection_Livres = collection(db, "Livres");
+          const newData = [];
+          const Livres = await getDocs(
+            query(
+              collection_Livres,
+              where("url_cover", "!=", ""),
+              limit(10)
+            ));
+          Livres.forEach((element) => {
+            newData.push({
+              id: element.id,
+              Titre: element.data().Titre,
+              Auteur: element.data().Auteur,
+              url_cover: element.data().url_cover,
+            });
+        });
+        setData(newData);
+        setOriginalData(newData);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des livres :", error);
+      }
+      console.log(Data);
+  }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,9 +92,10 @@ const LivresScreen = () => {
             borderBottomWidth: 0
         }}
       />
+
       <FlatList
-        data={data}
-        renderItem={({ item }) => <Item title={item.title} image={item.img} auteur={item.auteur} />}
+        data={Data}
+        renderItem={({item}) => <Item title={item.Titre} image={item.url_cover} auteur={item.Auteur} />}
         keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
