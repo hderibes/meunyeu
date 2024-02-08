@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start --host 172.27.189.213 --port 8080",
-    "__comment__": "start: expo start --dev-client",
+    "__comment__": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web"

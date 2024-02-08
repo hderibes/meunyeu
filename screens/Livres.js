@@ -1,8 +1,14 @@
 import * as React from 'react';
-import { Text, View, SafeAreaView, StyleSheet,Image, FlatList, Platform, StatusBar  } from 'react-native';
+import { Text, View, SafeAreaView, StyleSheet,Image, FlatList, Platform, StatusBar, Button  } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { collection, getDocs, where, limit, query} from "firebase/firestore"; 
 import db from '../firebaseConfig'
+import infoLivreScreen from './Livres/infoLivre';
+import { createStackNavigator } from '@react-navigation/stack';
+
+
+
+const Stack_Livres = createStackNavigator();
 
 
 const Item = ({ title, image, auteur }) => (
@@ -19,7 +25,7 @@ const Item = ({ title, image, auteur }) => (
   </View>
 );
 
-const LivresScreen = () => {
+const LivresScreen = ({navigation}) => {
   const [searchValue, setSearchValue] = React.useState('');
   const [Data, setData] = React.useState([]);
   const [OriginalData, setOriginalData] = React.useState([]);
@@ -40,7 +46,6 @@ const LivresScreen = () => {
     setData(updatedData);
     setSearchValue(text);
   };
-
 
   React.useEffect(()=>{
       AfficherLivres();
@@ -75,10 +80,18 @@ const LivresScreen = () => {
 
 
   return (
+
+
     <SafeAreaView style={styles.container}>
-        <View>
-            <Text style={styles.header}>La bibliothèque du moulin</Text>
-        </View>
+      <View>
+          <Text style={styles.header}>La bibliothèque du moulin</Text>
+      </View>
+      <Button
+      title="Books info"
+      onPress={() =>
+        navigation.navigate('infoLivre')
+      }
+      />
 
       <SearchBar
         placeholder="chercher un livre..."
