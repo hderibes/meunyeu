@@ -1,46 +1,119 @@
 import * as React from 'react';
-import { Text, View, Button, ToastAndroid, } from 'react-native';
-import db from '../firebaseConfig'
-import { collection, getDocs} from "firebase/firestore"; 
+import { Text, View, SafeAreaView, StyleSheet,Image, FlatList, Platform, StatusBar, Button, TouchableOpacity  } from 'react-native';
+import { SearchBar } from 'react-native-elements';
+import { useBooks } from '../components/LoadBooks';
 
-const Item = ({ title, auteur }) => (
 
-    <View>
-          <Text>{title}</Text>
-          <Text>{auteur}</Text>
+
+const Item = ({ title, image, auteur, navigation, id }) => (
+  <TouchableOpacity
+    onPress={() =>  
+      navigation.navigate('Info_Emprunt',{LivreId:id})}  
+    style = {{flex:1}}
+  >
+  <View style={styles.item}>
+    <Image
+        style={styles.couverture}
+        source={{uri: image}}
+    />
+    <View style={{flex: 1, justifyContent: 'center'}}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.auteur}>{auteur}</Text>
     </View>
-  );
+  </View>
+  </TouchableOpacity>
+);
 
+const EmprunterScreen = ({navigation}) => {
+    const [searchValue, setSearchValue] = React.useState('');
+    const {booksData} = useBooks();
+    const [Data, setData] = React.useState(booksData);
+   
 
-export default function EmprunterScreen() {
-    const [Data, setData] = React.useState([]);
-
-    React.useEffect(()=>{
-        AfficherLivres();
-    },[]);
-
-    async function AfficherLivres(){
-        try{
-            const newData = [];
-            const Livres = await getDocs(collection(db, "Livres"))
-            Livres.forEach((element) => {
-                console.log(`${element.id} et ${element.data().Titre}`);
-                newData.push({id: element.id, Titre: element.data().Titre});
-            });
-            setData(newData);
-            //ToastAndroid.show('Request sent !!');
-            
-        } catch{
-            ToastAndroid.show('Erreur lors du chargement des livres', ToastAndroid.SHORT);
+    const searchFunction = (text) => {
+        const textData = text.toUpperCase();
+        if (textData === "") {
+        setData(booksData); // Utilisez la variable contenant toutes les données d'origine
+        setSearchValue(text);
+        return;
         }
-    }
+
+        const updatedData = booksData.filter((item) => {
+        const itemData = item?.Titre?.toUpperCase() || "";
+        return itemData.indexOf(textData) > -1;
+        });
+
+        setData(updatedData);
+        setSearchValue(text);
+    };
+
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Emprunter un livre!</Text>
-            <Button title="Press pour afficher" onPress={AfficherLivres}/>
-            {Data.map((livre) => (
-                <Text key={livre.id}>{`ID: ${livre.id}, Titre: ${livre.Titre}`}</Text>
-            ))}
+
+
+        <SafeAreaView style={styles.container}>
+        <View>
+            <Text style={styles.header}>La bibliothèque du moulin</Text>
         </View>
-    );
-}
+
+        <SearchBar
+            placeholder="chercher un livre à emprunter..."
+            round
+            value={searchValue}
+            onChangeText={(text) => searchFunction(text)}
+            autoCorrect={false}
+            containerStyle={{
+                backgroundColor: '#1B2430',
+                borderTopWidth: 0,
+                borderBottomWidth: 0
+            }}
+        />
+
+        <FlatList
+            data={Data}
+            renderItem={({item}) => <Item title={item.Titre} image={item.url_cover} auteur={item.Auteur} navigation={navigation} id={item.id} />}
+            keyExtractor={(item) => item.id}
+        />
+        </SafeAreaView>
+  );
+};
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#1B2430',
+    flex: 1,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  header:{
+    fontSize: 20,
+    fontWeight: 'bold',
+    color:'white',
+    textAlign: 'center',
+    marginVertical: 2,
+  },
+  item: {
+    flexDirection: 'row',
+    padding: 5,
+    marginHorizontal: 8,
+    fontSize: 20,
+    
+  },
+  title: {
+    paddingLeft: 10,
+    fontSize: 18,
+    
+    color:'white',
+  },
+  couverture: {
+    aspectRatio: 18 / 24, // Remplacez 16/9 par le rapport hauteur/largeur souhaité
+    height: 80,
+  },
+  auteur:{
+    fontSize: 12,
+    paddingLeft:10,    
+    color: '#F0F0F2',
+  }
+});
+
+export default EmprunterScreen;

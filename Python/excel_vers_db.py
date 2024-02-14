@@ -58,15 +58,22 @@ def verify_Titre(records, q):
             data = first_record['data']
             if 'title' in data:
                 title_encode = data['title']
-                title = title_encode.encode('latin-1').decode('utf-8')
-                print("Titre = ", title)
-                nb_titre +=1
-                return title
+                try:
+                    title = title_encode.encode('latin-1').decode('utf-8')
+                    print("Titre = ", title)
+                    nb_titre +=1
+                    print(title)
+                    return title
+                except Exception as e:
+                    print(title + " " + e)
+                    exit()
+                    #return ""                
             else:
-                print("titre pas trouvé")
+                print("pas de titre")
                 return ""
         else: return ""
     else:
+        print(q)
         nb_titre +=1
         return q
 def verify_Editeur(records, q):
@@ -160,11 +167,8 @@ def add_resume(records):
         else: return "Pas de commentaire pour ce livre"
     return "Pas de commentaire pour ce livre"
 
-#1-100 OK
-#101-200 0K
-#201-1000 OK
 def from_excel_to_firestore():
-    for i in range(201, 1000):
+    for i in range(len(df)):
         isbn = int(verify_ISBN(df.iloc[i,17]))
         print(isbn)
         if  isbn !=0 : 
@@ -172,28 +176,28 @@ def from_excel_to_firestore():
         else: 
             records = 0
         livre_info = {
-            'Carton'    :verify(df.iloc[i,1]),
-            'Collection':verify(df.iloc[i,2]),
-            'Editeur'   :verify_Editeur(records, df.iloc[i,3]),
-            'N°'        :verify(df.iloc[i,4]),
-            'Série'     :verify_Serie(records, df.iloc[i,5]),
-            'Auteur'    :verify_Auteur(records, df.iloc[i,6]),
+            # 'Carton'    :verify(df.iloc[i,1]),
+            # 'Collection':verify(df.iloc[i,2]),
+            # 'Editeur'   :verify_Editeur(records, df.iloc[i,3]),
+            # 'N°'        :verify(df.iloc[i,4]),
+            # 'Série'     :verify_Serie(records, df.iloc[i,5]),
+            # 'Auteur'    :verify_Auteur(records, df.iloc[i,6]),
             'Titre'     :verify_Titre(records, df.iloc[i,7]),
-            'Etagère'   :verify(df.iloc[i,8]),
-            'Catégories':verify(df.iloc[i,9]),
-            'Tags'      :verify(df.iloc[i,10]), 
-            'langue'    :verify(df.iloc[i,11]), 
-            'Editeur.1' :verify(df.iloc[i,12]),
-            'Date'      :verify_Date(records, df.iloc[i,13]),
-            'édition'   :verify(df.iloc[i,14]),
-            'dédicacé'  :verify(df.iloc[i,15]),
-            'relié'     :verify(df.iloc[i,16]),
-            'url_cover' :cover(records),
-            'resume'    :add_resume(records),
-            'ISBN-13'   : isbn
+            # 'Etagère'   :verify(df.iloc[i,8]),
+            # 'Catégories':verify(df.iloc[i,9]),
+            # 'Tags'      :verify(df.iloc[i,10]), 
+            # 'langue'    :verify(df.iloc[i,11]), 
+            # 'Editeur.1' :verify(df.iloc[i,12]),
+            # 'Date'      :verify_Date(records, df.iloc[i,13]),
+            # 'édition'   :verify(df.iloc[i,14]),
+            # 'dédicacé'  :verify(df.iloc[i,15]),
+            # 'relié'     :verify(df.iloc[i,16]),
+            # 'url_cover' :cover(records),
+            # 'resume'    :add_resume(records),
+            # 'ISBN-13'   : isbn
         }
-        print(livre_info)
-        db.collection('Livres').add(livre_info)
+        # print(livre_info)
+        # db.collection('Livres').add(livre_info)
 
 def get_records_from_isbn(isbn):
     
@@ -211,14 +215,6 @@ def get_records_from_isbn(isbn):
             # Check if 'records' is a non-empty dictionary
             if records and isinstance(records, dict):
                 return records
-                # # Access the first record (value in the dictionary)
-                # first_record = next(iter(records.values()), None)
-
-                # # Check if 'data' key exists in the first record
-                # if first_record and 'data' in first_record:
-                #     data = first_record['data']
-                    
-                #     return data
             else: return 0
         else: return 0
                 
@@ -228,6 +224,6 @@ def get_records_from_isbn(isbn):
     
 
 from_excel_to_firestore()
-print("isbn {}, titre {}, editeur {}, date {}, resume {}, cover {}".format(nb_isbn, nb_titre, nb_editeurs, nb_date, nb_resume, nb_cover))
+# # print("isbn {}, titre {}, editeur {}, date {}, resume {}, cover {}".format(nb_isbn, nb_titre, nb_editeurs, nb_date, nb_resume, nb_cover))
 
-
+# print( len(df))

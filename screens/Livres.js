@@ -1,17 +1,14 @@
 import * as React from 'react';
-import { Text, View, SafeAreaView, StyleSheet,Image, FlatList, Platform, StatusBar, Button  } from 'react-native';
+import { Text, View, SafeAreaView, ScrollView, StyleSheet,Image, FlatList, Platform, StatusBar, Button, TouchableOpacity  } from 'react-native';
 import { SearchBar } from 'react-native-elements';
-import { collection, getDocs, where, limit, query} from "firebase/firestore"; 
-import db from '../firebaseConfig'
-import infoLivreScreen from './Livres/infoLivre';
-import { createStackNavigator } from '@react-navigation/stack';
+import { useBooks } from '../components/LoadBooks';
 
-
-
-const Stack_Livres = createStackNavigator();
-
-
-const Item = ({ title, image, auteur }) => (
+const Item = ({ title, image, auteur, navigation, id }) => (
+  <TouchableOpacity
+    onPress={() =>  
+      navigation.navigate('InfoLivre',{LivreId:id})}  
+    style = {{flex:1}}
+    >
   <View style={styles.item}>
     <Image
         style={styles.couverture}
@@ -21,78 +18,50 @@ const Item = ({ title, image, auteur }) => (
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.auteur}>{auteur}</Text>
     </View>
-   
   </View>
+  </TouchableOpacity>
 );
+
+const Selection =({name, route})=>(
+  <TouchableOpacity style={styles.selection_button}>
+    <Text style={{color:'white'}}>{name}</Text>
+  </TouchableOpacity>
+)
 
 const LivresScreen = ({navigation}) => {
   const [searchValue, setSearchValue] = React.useState('');
-  const [Data, setData] = React.useState([]);
-  const [OriginalData, setOriginalData] = React.useState([]);
+  const {booksData} = useBooks();
+  const [Data, setData] = React.useState(booksData);
 
   const searchFunction = (text) => {
-    const textData = text.toUpperCase();
-    if (textData === "") {
-      setData(OriginalData); // Utilisez la variable contenant toutes les données d'origine
-      setSearchValue(text);
+      const textData = text.toUpperCase();
+      if (textData === ""){
+        setData(booksData);
+        setSearchValue(text);
       return;
-    }
+      }
 
-    const updatedData = OriginalData.filter((item) => {
+      const updatedData = booksData.filter((item) => {
       const itemData = item?.Titre?.toUpperCase() || "";
       return itemData.indexOf(textData) > -1;
-    });
+      });
 
-    setData(updatedData);
-    setSearchValue(text);
+      setData(updatedData);
+      setSearchValue(text);
   };
 
-  React.useEffect(()=>{
-      AfficherLivres();
-      
-  },[]);
-
-  async function AfficherLivres(){
-      try{
-          collection_Livres = collection(db, "Livres");
-          const newData = [];
-          const Livres = await getDocs(
-            query(
-              collection_Livres,
-              where("url_cover", "!=", ""),
-              limit(10)
-            ));
-          Livres.forEach((element) => {
-            newData.push({
-              id: element.id,
-              Titre: element.data().Titre,
-              Auteur: element.data().Auteur,
-              url_cover: element.data().url_cover,
-            });
-        });
-        setData(newData);
-        setOriginalData(newData);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des livres :", error);
-      }
-      console.log(Data);
-  }
-
-
   return (
-
 
     <SafeAreaView style={styles.container}>
       <View>
           <Text style={styles.header}>La bibliothèque du moulin</Text>
       </View>
-      <Button
-      title="Books info"
-      onPress={() =>
-        navigation.navigate('infoLivre')
-      }
-      />
-
+      <View>
+        <ScrollView style={styles.scroll_selecteur}>
+          <Selection name="Livres"/>
+          <Selection name="Livres"/>
+        </ScrollView>
+      </View>
       <SearchBar
         placeholder="chercher un livre..."
         round
@@ -108,12 +77,13 @@ const LivresScreen = ({navigation}) => {
 
       <FlatList
         data={Data}
-        renderItem={({item}) => <Item title={item.Titre} image={item.url_cover} auteur={item.Auteur} />}
+        renderItem={({item}) => <Item title={item.Titre} image={item.url_cover} auteur={item.Auteur} navigation={navigation} id={item.id} />}
         keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -127,6 +97,12 @@ const styles = StyleSheet.create({
     color:'white',
     textAlign: 'center',
     marginVertical: 2,
+  },
+  scroll_selecteur:{
+    horizontal: true,
+  },
+  selection_button:{
+
   },
   item: {
     flexDirection: 'row',
