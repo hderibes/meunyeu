@@ -1,13 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-// Optionally import the services that you want to use
-// import {...} from "firebase/auth";
-// import {...} from "firebase/database";
-// import {...} from "firebase/firestore";
-// import {...} from "firebase/functions";
-// import {...} from "firebase/storage";
-
 // Initialize Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCkld3depG_wgKs2iaXNu-UytQE2uNbxZA",
@@ -20,11 +13,8 @@ const firebaseConfig = {
     measurementId: "G-3NXLBTXWK2"
 };
 
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Cloud Firestore and get a reference to the service
+console.log("created");
 const db = getFirestore(app);
 
-export default db;
+export default {db, app};

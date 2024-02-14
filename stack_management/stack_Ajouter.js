@@ -1,6 +1,6 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
 import AjouterScreen from '../screens/Ajouter';
+import { createStackNavigator } from '@react-navigation/stack';
 import AjouterManScreen from '../screens/Ajouter/AjouterMan';
 
 const Stack = createStackNavigator();
