@@ -176,25 +176,25 @@ def from_excel_to_firestore():
         else: 
             records = 0
         livre_info = {
-            # 'Carton'    :verify(df.iloc[i,1]),
-            # 'Collection':verify(df.iloc[i,2]),
-            # 'Editeur'   :verify_Editeur(records, df.iloc[i,3]),
-            # 'N°'        :verify(df.iloc[i,4]),
-            # 'Série'     :verify_Serie(records, df.iloc[i,5]),
-            # 'Auteur'    :verify_Auteur(records, df.iloc[i,6]),
+            'Carton'    :verify(df.iloc[i,1]),
+            'Collection':verify(df.iloc[i,2]),
+            'Editeur'   :verify_Editeur(records, df.iloc[i,3]),
+            'N°'        :verify(df.iloc[i,4]),
+            'Série'     :verify_Serie(records, df.iloc[i,5]),
+            'Auteur'    :verify_Auteur(records, df.iloc[i,6]),
             'Titre'     :verify_Titre(records, df.iloc[i,7]),
-            # 'Etagère'   :verify(df.iloc[i,8]),
-            # 'Catégories':verify(df.iloc[i,9]),
-            # 'Tags'      :verify(df.iloc[i,10]), 
-            # 'langue'    :verify(df.iloc[i,11]), 
-            # 'Editeur.1' :verify(df.iloc[i,12]),
-            # 'Date'      :verify_Date(records, df.iloc[i,13]),
-            # 'édition'   :verify(df.iloc[i,14]),
-            # 'dédicacé'  :verify(df.iloc[i,15]),
-            # 'relié'     :verify(df.iloc[i,16]),
-            # 'url_cover' :cover(records),
-            # 'resume'    :add_resume(records),
-            # 'ISBN-13'   : isbn
+            'Etagère'   :verify(df.iloc[i,8]),
+            'Catégories':verify(df.iloc[i,9]),
+            'Tags'      :verify(df.iloc[i,10]), 
+            'langue'    :verify(df.iloc[i,11]), 
+            'Editeur.1' :verify(df.iloc[i,12]),
+            'Date'      :verify_Date(records, df.iloc[i,13]),
+            'édition'   :verify(df.iloc[i,14]),
+            'dédicacé'  :verify(df.iloc[i,15]),
+            'relié'     :verify(df.iloc[i,16]),
+            'url_cover' :cover(records),
+            'resume'    :add_resume(records),
+            'ISBN-13'   : isbn
         }
         # print(livre_info)
         # db.collection('Livres').add(livre_info)

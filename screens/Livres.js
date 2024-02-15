@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Text, View, SafeAreaView, ScrollView, StyleSheet,Image, FlatList, Platform, StatusBar, Button, TouchableOpacity  } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { useBooks } from '../components/LoadBooks';
-
+import { signOut } from "firebase/auth";
+import { auth } from '../firebaseConfig';
 const Item = ({ title, image, auteur, navigation, id }) => (
   <TouchableOpacity
     onPress={() =>  
@@ -56,6 +57,7 @@ const LivresScreen = ({navigation}) => {
       <View>
           <Text style={styles.header}>La bibliothèque du moulin</Text>
       </View>
+      <Button title="Logout" onPress={() => signOut(auth)}></Button>
       <View>
         <ScrollView style={styles.scroll_selecteur}>
           <Selection name="Livres"/>
