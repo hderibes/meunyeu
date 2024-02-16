@@ -4,7 +4,6 @@ from firebase_admin import firestore
 import json
 import pandas as pd
 import requests
-import requests
 from bs4 import BeautifulSoup
 
 cred = credentials.Certificate('./Key.json')

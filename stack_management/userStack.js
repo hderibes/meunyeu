@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator();
 
 export default function UserStack() {
   return(
-    <BooksProvider>
+   // <BooksProvider>
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
@@ -52,7 +52,7 @@ export default function UserStack() {
           <Tab.Screen name="Avis" component={AvisScreen} />
         </Tab.Navigator>
       </NavigationContainer>
-    </BooksProvider>
+   // </BooksProvider>
   );
   // return (
   //   <NavigationContainer>

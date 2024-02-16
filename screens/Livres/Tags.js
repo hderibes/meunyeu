@@ -1,18 +1,18 @@
 import {useEffect, useState}from 'react';
 import { Text, View, SafeAreaView, StyleSheet,Image, FlatList, Platform, StatusBar, Button, TouchableOpacity  } from 'react-native';
 import { SearchBar } from 'react-native-elements';
-import { Entete } from '../components/Entete';
-import { Selecteur_mode } from '../components/Selecteur_mode.js';
+import { Entete } from '../../components/Entete.js';
+import { Selecteur_mode } from '../../components/Selecteur_mode.js';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { collection, getDocs, where, limit, query, orderBy, startAfter} from "firebase/firestore"; 
-import {db} from '../firebaseConfig'
-import Item from '../components/Item.js';
+import {db} from '../../firebaseConfig.js'
+import Item from '../../components/Item.js';
 import { update } from 'lodash';
 
 
 
-const LivresScreen = ({navigation}) => {
+const TagsScreen = ({navigation}) => {
   const [searchValue, setSearchValue] = useState('');
   const [Data, setData] = useState([]);
   const [OriginalData, setOriginalData] = useState([]);
@@ -59,6 +59,7 @@ const LivresScreen = ({navigation}) => {
       }
   }
 
+
   const searchFunction = async (text) => {
     const textData = text.toUpperCase();
     if (textData === ""){
@@ -100,14 +101,13 @@ const LivresScreen = ({navigation}) => {
   };
 
   return (
-
     <View style={{flex:1, backgroundColor:'#254b7f'}}>
     <SafeAreaView style={styles.container}>
       <Entete/>
-      <Selecteur_mode navigation={navigation} actual={'Main_Livres'}/>
+      <Selecteur_mode/>
 
       <SearchBar
-        placeholder=" chercher un Livre..."
+        placeholder=" chercher un livre..."
         round
         lightTheme
         value={searchValue}
@@ -157,4 +157,4 @@ const styles = StyleSheet.create({
 },
 });
 
-export default LivresScreen;
+export default TagsScreen;
